@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="#" />
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      const quizId = "{{ quizId }}";
+      const exId = "{{ exId }}";
+      $(document).ready(function () {
+        get_comment();
+      });
+      function get_comment() {
+        $.ajax({
+          type: "GET",
+          url: `/questions/${quizId}/explanations/${exId}/comment`,
+          data: {},
+          success: function (response) {
+            JSON.parse(response).forEach((item) => {
+              let temp_html;
+              // item 안에 유저 고유번호있다 가정하고 -> a
+              // 세션 고유번호 -> b
+              // session["_id"];
+              if (String(item[2]) === "{{session['_id']}}") {
+                temp_html = `<details class="comment">
+                                <summary>${item[0]}</summary>
+                                <p>${item[1]}</p> <button>수정</button> <button>삭제</button>
+                                </details>`;
+              } else {
+                temp_html = `<details class="comment">
+                                <summary>${item[0]}</summary>
+                                <p>${item[1]}</p>
+                                </details>`;
+              }
+              $(".comment-section").append(temp_html);
+            });
+          },
+        });
+      }
+
+      /*       function delete_comment(comment_id) {
+        $.ajax({
+          type: "DELETE",
+          url: `/questions/${quizId}/explanations/${exId}/comment`,
+          data: { comment_id: comment_id },
+          success: function (response) {
+            window.location.reload();
+          },
+        });
+      }
+
+      function save_comment() {
+        // user_id, comment_title, comment_content, user_unique_id 변수 선언을 어떻게 해야 할까요?
+        let user_id = $("#user_id").val();
+        let comment_title = $("#comment_title").val();
+        let comment_content = $("#comment_content").val();
+        let user_unique_id = $(`#user_unique_id`).val();
+
+        $.ajax({
+          type: "POST",
+          url: `/questions/${quizId}/explanations/${exId}/comment`,
+          data: {
+            user_id: user_id,
+            comment_title: comment_title,
+            comment_content: comment_content,
+            user_unique_id: user_unique_id,
+          },
+          success: function (response) {
+            window.location.reload();
+          },
+        });
+      }
+
+      function patch_comment(comment_id) {
+        //user_id, comment_title, comment_content, user_unique_id 변수 선언을 어떻게 해야 할까요?
+        const commentTitle = $("#comment_title").val();
+        const commentContent = $("#comment_content").val();
+
+        $.ajax({
+          type: "PATCH",
+          url: window.location.pathname,
+          data: JSON.stringify({
+            comment_title: commentTitle,
+            comment_content: commentContent,
+          }),
+          contentType: "application/json",
+          success: function (response) {
+            window.location.href = "/";
+          },
+        });
+      } */
+    </script>
+
+    {%with messages = get_flashed_messages()%} {%if messages %}
+    <script type="text/javascript">
+      alert("{{messages[-1]}}");
+    </script>
+    {%endif%} {%endwith%}
+    <title>{{pageTitle}} | Code Scanner</title>
+  </head>
+  <body>
+    <section class="modal">
+      <form
+        class="question-add-form"
+        method="post"
+        action="/questions/{{ quizId }}/explanations/{{ exId }}/comment"
+      >
+        <label for="question-add-form__title">Comment Title</label>
+        <input
+          type="text"
+          name="question-add-form__title"
+          id="question-add-form__title"
+          placeholder="제목을 입력하세요."
+          maxlength="50"
+          required
+        />
+        <label for="question-add-form__content">Description</label>
+        <textarea
+          type="text"
+          id="question-add-form__content"
+          name="question-add-form__content"
+          placeholder="설명해주세요!"
+          required
+        ></textarea>
+        <!-- <label for="question-add-form__hashtag">Hashtag</label>
+        <input
+          type="text"
+          id="question-add-form__hashtag"
+          name="question-add-form__hashtag"
+          placeholder="Hashtag는 콤마(,)로 구분 됩니다"
+          required
+        /> -->
+        <div class="form-btn-box">
+          <input type="submit" value="Submit" />
+          <input type="button" value="Cancel" />
+        </div>
+      </form>
+    </section>
+    <div class="main-screen">
+      <header class="screen-header">
+        <a href="/" class="logo">
+          <img src="/static/imgs/scanner.png" class="logo__img" />
+          <span class="logo__title">Code Scanner</span>
+        </a>
+        <nav class="header__nav-bar">
+          <ul class="nav-bar__icon-list">
+            {% if session.get('login_flag') %}
+            <li class="nav-bar__icon-item">
+              <a href="/users/{{session['_id']}}" class="profile-icon">
+                <i class="fa-solid fa-user"></i>
+              </a>
+            </li>
+            <li class="nav-bar__icon-item">
+              <a href="/logout" class="sign-out">
+                <i class="fa-solid fa-right-from-bracket"></i>
+              </a>
+            </li>
+
+            {% else %}
+            <li class="nav-bar__icon-item">
+              <a href="/join" class="join">
+                <i class="fa-solid fa-user-plus"></i>
+              </a>
+            </li>
+            <li class="nav-bar__icon-item">
+              <a href="/login" class="sign-in">
+                <i class="fa-solid fa-right-to-bracket"></i>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </header>
+      <main class="explanation-main">
+        <section class="explanation">
+          <div class="explanation__title">{{ reviewTitle }}</div>
+          <button class="code-copy">
+            <div class="explanation__content">{{ reviewComment }}</div>
+          </button>
+          <!-- <div class="explanation__desc">Desc</div> -->
+        </section>
+        <section class="comment-section">
+          {% if session.get('login_flag') %}
+          <button class="comment-add">Add Comment</button>
+          {% endif %}
+          <!-- <details class="comment">
+            <summary>folding TEST</summary>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Fugit
+              nulla repellendus ea rem excepturi est minima impedit, laborum
+              soluta. Dolores blanditiis voluptatem fugit nam odit ea
+              necessitatibus hic provident temporibus.
+            </p>
+          </details> -->
+        </section>
+      </main>
+    </div>
+    <script src="/static/js/modal.js"></script>
+    <script
+      src="https://kit.fontawesome.com/d1f609d41d.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

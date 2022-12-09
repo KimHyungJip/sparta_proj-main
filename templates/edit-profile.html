@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="shortcut icon" href="#"/>
+    <link rel="stylesheet" href="/static/css/style.css"/>
+    {%with messages = get_flashed_messages()%} {%if messages %}
+    <script type="text/javascript">
+        alert("{{messages[-1]}}");
+    </script>
+    {%endif%} {%endwith%}
+    <title>{{pageTitle}} | Code Scanner</title>
+</head>
+<body>
+<div class="main-screen">
+    <header class="screen-header">
+        <a href="/" class="logo">
+            <img src="/static/imgs/scanner.png" class="logo__img"/>
+            <span class="logo__title">Code Scanner</span>
+        </a>
+        <nav class="header__nav-bar">
+            <ul class="nav-bar__icon-list">
+                <li class="nav-bar__icon-item">
+                    <a href="/users/{{session['_id']}}" class="profile-icon">
+                        <i class="fa-solid fa-user"></i>
+                    </a>
+                </li>
+                <li class="nav-bar__icon-item">
+                    <a href="/logout" class="sign-out">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <main class="edit-profile">
+        <div class="edit-profile-form">
+            {% if image_url is sameas '1' %}
+            <img src="https://velog.velcdn.com/images/bhk2020/post/441afe2d-9104-4c29-8591-ea65881d29b8/image.PNG"
+                 style="width:30%">
+            {% else %}
+            <img src="{{ image_url }}"
+                 style="width:30%">
+            {% endif %}
+            <section class="container-sm">
+                <form action="/users/{{session['_id']}}/upload" method="POST" enctype="multipart/form-data" align="center">
+                    <input type="file" name="myFile"/>
+                    <input type="submit" value="프로필 적용"/>
+                </form>
+            </section>
+            <section class="container-sm" align="center">
+                <form action="/users/{{session['_id']}}/profile/delete" method="POST">
+                    <input type="submit" value="프로필 초기화"/>
+                </form>
+            </section>
+        </div>
+        <form
+                class="edit-profile-form"
+                action="/users/{{session['_id']}}/edit"
+                method="post"
+        >
+            <div class="edit-profile-form__id">
+                <label for="edit-profile-id">ID</label>
+                <input
+                        type="text"
+                        name="edit-profile-id"
+                        id="edit-profile-id"
+                        value=" {{ session['user_id'] }} "
+                        readonly
+                        required
+                />
+            </div>
+
+            <div class="edit-profile-form__username">
+                <label for="edit-profile-username">USERNAME</label>
+                <input
+                        type="text"
+                        name="edit-profile-username"
+                        id="edit-profile-username"
+                        value=" {{ username }}"
+                        required
+                />
+            </div>
+            <div class="edit-profile-form__email">
+                <label for="edit-profile-email">EMAIL</label>
+                <input
+                        type="email"
+                        name="edit-profile-email"
+                        id="edit-profile-email"
+                        value="{{ userEmail }}"
+                        required
+                />
+            </div>
+            <div class="edit-profile-form__pw">
+                <label for="edit-profile-pw">PASSWORD</label>
+                <input
+                        type="password"
+                        name="edit-profile-pw"
+                        id="edit-profile-pw"
+                        required
+                />
+            </div>
+            <div class="edit-profile-form__pw-confirm">
+                <label for="edit-profile-confirm">CONFIRM</label>
+                <input
+                        type="password"
+                        name="edit-profile-confirm"
+                        id="edit-profile-confirm"
+                        required
+                />
+            </div>
+            <input type="submit" value="확인"/>
+            <a href="/users/{{ session['_id'] }}/delete">
+                <button type="button">탈퇴</button>
+            </a>
+        </form>
+    </main>
+</div>
+<script src="../static/js/modal.js"></script>
+<script
+        src="https://kit.fontawesome.com/d1f609d41d.js"
+        crossorigin="anonymous"
+></script>
+</body>
+</html>

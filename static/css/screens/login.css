@@ -1,0 +1,23 @@
+.login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-form {
+  width: 40%;
+  height: 40%;
+  background-color: white;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.login-form div {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 30% 60%;
+  text-align: center;
+}

@@ -1,0 +1,71 @@
+{%with messages = get_flashed_messages()%}
+{%if messages %}
+<script type="text/javascript">
+    alert("{{messages[-1]}}");
+</script>
+{%endif%}
+{%endwith%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            margin: auto;
+            text-align: center;
+            font-family: arial;
+        }
+
+        .title {
+            color: grey;
+            font-size: 18px;
+        }
+
+        button {
+            border: none;
+            outline: 0;
+            display: inline-block;
+            padding: 8px;
+            color: white;
+            background-color: #000;
+            text-align: center;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+        }
+
+        a {
+            text-decoration: none;
+            font-size: 22px;
+            color: black;
+        }
+
+        button:hover, a:hover {
+            opacity: 0.7;
+        }
+    </style>
+
+</head>
+<body>
+<h2 style="text-align:center">내 프로필</h2>
+<div class="card" id="profile">
+    <img src="https://velog.velcdn.com/images/bhk2020/post/441afe2d-9104-4c29-8591-ea65881d29b8/image.PNG"
+         style="width:100%">
+    <div>
+        <h1>{{ d2 }}</h1>
+        <form method="POST" action="/profile/delete">
+            <p>아이디 : {{ d1 }}</p>
+            비밀번호 <input type="password" name="user_pw"/> <br><br>
+            <div style="margin: 24px 0;">{{ d3 }}</div>
+            <p>
+                <button type="submit">탈퇴</button>
+            </p>
+        </form>
+        <button onclick="location.href='/'">홈</button>
+    </div>
+</div>
+</body>
+</html>

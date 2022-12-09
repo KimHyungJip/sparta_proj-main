@@ -1,0 +1,29 @@
+{%with messages = get_flashed_messages()%}
+{%if messages %}
+<script type="text/javascript">
+    alert("{{messages[-1]}}");
+</script>
+{%endif%}
+{%endwith%}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<BODY>
+<form method="POST" action="/register">
+    <div style="text-align: center;">
+        <H1>회원가입 페이지 </H1> <br>
+        ID <input type="text" name="user_id"/> <br>
+        비밀번호 <input type="password" name="user_pw"/> <br>
+        비밀번호확인 <input type="password" name="pw_confirm"/> <br>
+        이름 <input type="text" name="name"/> <br>
+        이메일 <input type="email" name="email"/> <br>
+        <input type="submit" value="가입하기">
+    </div>
+</form>
+
+</BODY>
+</HTML>

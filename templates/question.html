@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="#" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <script>
+      $(document).ready(function () {
+        show_problem_review();
+      });
+
+      function show_problem_review() {
+        let problem_id = "{{ quizId }}";
+        $(".description").text("{{ quizContent }}");
+        $.ajax({
+          type: "GET",
+          url: "/review",
+          data: { problem_id_give: problem_id }, //전달할데이터
+          dataType: "json", //전달받을 data타입
+          success: function (response) {
+            // console.log(response[0]);
+            // let problem_title = response[0][0]; //review_id
+            // let problem_comment = response[0][1]; //review_id
+            // let tempp_html = `
+            //                 <div>${problem_title}</div>
+            //                 <div>${problem_comment}</div>`;
+            // $("#problem").append(tempp_html);
+            for (let i = 0; i < response.length; i++) {
+              let id = response[i][3]; //review_id
+              let title = response[i][4]; //title
+              let comment = response[i][5]; //comment
+              // localStorage.setItem('json', JSON.stringify({review_id: id}))
+              let temp_html = `
+              <li class="question__item">
+              <a href="/questions/${problem_id}/explanations/${id}">
+                <span class="question__title">Explanation. ${title}</span>
+                <p class="question__content">
+                  ${comment}
+                </p>
+                <span class="question__hashtag"></span>
+              </a>
+              <button onclick="del_review(${id})"  type="button"style="background-color: wheat;border-radius: 30px;border: unset;outline: unset;" class="btn btn-dark" id="darkbtn">삭제</button>
+                <button onclick="up_review(${id})"  type="button"style="background-color: wheat;border-radius: 30px;border: unset;outline: unset;" class="btn btn-dark" id="darkbtn">수정</button>
+            </li>
+            </li>
+               `;
+              $(".question__list").append(temp_html);
+            }
+          },
+        });
+      }
+      function del_review(id) {
+        //id 번째 지울꺼야 if문으로 review_id의 user_id와 user의 userid가 같으면 지워,수정
+        let review_id = id;
+        $.ajax({
+          type: "DELETE",
+          url: "/review",
+          data: { review_id_give: review_id },
+          success: function (response) {
+            window.location.reload();
+            alert("삭제완료");
+          },
+        });
+      }
+
+      async function up_review(id) {
+        const { value: ipAddress } = await Swal.fire({
+          title: "제목수정",
+          input: "text",
+          inputLabel: "",
+          showCancelButton: true,
+          inputValidator: (value) => {
+            if (!value) {
+              return "You need to write something!";
+            }
+          },
+        });
+
+        let title = ipAddress;
+        const { value: text } = await Swal.fire({
+          input: "textarea",
+          inputLabel: "Message",
+          inputPlaceholder: "내용수정",
+          inputAttributes: {
+            "aria-label": "Type your message here",
+          },
+          showCancelButton: true,
+        });
+        let comment = text;
+
+        let review_id = id;
+        $.ajax({
+          type: "UPDATE",
+          url: "/review",
+          data: {
+            review_title_give: title,
+            review_comment_give: comment,
+            review_id_give: review_id,
+          },
+          success: function (response) {
+            alert(response["msg"]);
+            window.location.reload();
+          },
+        });
+      }
+    </script>
+    <title>{{pageTitle}} | Code Scanner</title>
+  </head>
+  <body>
+    <section class="modal">
+      <form class="question-add-form" method="post" action="/review">
+        <label for="question-add-form__title">Explanation Title</label>
+        <input
+          type="text"
+          name="question-add-form__title"
+          id="question-add-form__title"
+          placeholder="제목을 입력하세요."
+          maxlength="50"
+          required
+        />
+        <label for="question-add-form__content">Description</label>
+        <textarea
+          type="text"
+          id="question-add-form__content"
+          name="question-add-form__content"
+          placeholder="설명해주세요!"
+          required
+        ></textarea>
+        <input
+          type="text"
+          id="question-add-form__hashtag"
+          name="question-add-form__hashtag"
+          value="Question No. {{ quizId }}"
+          readonly
+        />
+        <div class="form-btn-box">
+          <input type="submit" value="Submit" />
+          <input type="button" value="Cancel" />
+        </div>
+      </form>
+    </section>
+    <div class="main-screen">
+      <header class="screen-header">
+        <a href="/" class="logo">
+          <img src="/static/imgs/scanner.png" class="logo__img" />
+          <span class="logo__title">Code Scanner</span>
+        </a>
+        <nav class="header__nav-bar">
+          <ul class="nav-bar__icon-list">
+            {% if session.get('login_flag') %}
+            <li class="nav-bar__icon-item">
+              <a href="/users/{{session['_id']}}" class="profile-icon">
+                <i class="fa-solid fa-user"></i>
+              </a>
+            </li>
+            <li class="nav-bar__icon-item">
+              <a href="/logout" class="sign-out">
+                <i class="fa-solid fa-right-from-bracket"></i>
+              </a>
+            </li>
+
+            {% else %}
+            <li class="nav-bar__icon-item">
+              <a href="/join" class="join">
+                <i class="fa-solid fa-user-plus"></i>
+              </a>
+            </li>
+            <li class="nav-bar__icon-item">
+              <a href="/login" class="sign-in">
+                <i class="fa-solid fa-right-to-bracket"></i>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </nav>
+      </header>
+      <main class="question-main">
+        <p class="description"></p>
+        <section class="question">
+          <ul class="question__list">
+            {% if session.get('login_flag') %}
+            <li class="question-add"><div class="plus-box">+</div></li>
+            {% endif %}
+          </ul>
+        </section>
+      </main>
+    </div>
+    <script src="../static/js/modal.js"></script>
+
+    <script
+      src="https://kit.fontawesome.com/d1f609d41d.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

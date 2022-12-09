@@ -1,0 +1,35 @@
+/* config */
+@import "/static/css/config/_variables.css";
+@import "/static/css/config/reset.css";
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@1,500;1,600;1,700&display=swap");
+
+/* components */
+@import "/static/css/components/screen-header.css";
+@import "/static/css/components/main-screen.css";
+@import "/static/css/components/modal.css";
+
+/* screens */
+@import "/static/css/screens/home.css";
+@import "/static/css/screens/join.css";
+@import "/static/css/screens/login.css";
+@import "/static/css/screens/edit-profile.css";
+@import "/static/css/screens/question.css";
+@import "/static/css/screens/explanation.css";
+
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  height: 100%;
+  width: 100%;
+  /* cursor: url("../css/config/codescan.cur"), pointer; */
+  /* cursor: url("../css/config/codescan-white.cur"), pointer; */
+  cursor: url("../css/config/codescan-color.cur"), pointer;
+  font-family: "Open Sans", sans-serif;
+}
+
+body.swal2-height-auto {
+  height: 100% !important;
+}

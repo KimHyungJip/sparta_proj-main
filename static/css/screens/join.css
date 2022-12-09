@@ -1,0 +1,27 @@
+.join {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.join-form {
+  width: 30%;
+  height: 70%;
+  background-color: white;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.join-form div {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 30% 60%;
+  text-align: center;
+}
+
+.join-form button {
+  width: 20%;
+}
